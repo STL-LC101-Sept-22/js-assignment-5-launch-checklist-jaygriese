@@ -1,15 +1,6 @@
-// Write your helper functions here!
 require('isomorphic-fetch');
 
 function addDestinationInfo(document, name, diameter, star, distance, moons, imageUrl) {
-
-    console.log(imageUrl);
-    console.log(name);
-    console.log(diameter);
-    console.log(star);
-    console.log(distance);
-    console.log(moons);
-
 
     let missionTarget = document.getElementById("missionTarget");
    // Here is the HTML formatting for our mission target div.
@@ -36,46 +27,59 @@ function validateInput(testInput) {
 }
 
 
-function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
-//    let testForm = document.getElementById("testForm");
+function formSubmission(document, pilotName, copilotName, fuelLevel, cargoMass) {  
+    let testFormButton = document.getElementById("testForm");
+    testFormButton.addEventListener("submit", function(event) {
+ 
+    let pilotName = document.querySelector("input[name=pilotName]");
+    let copilotName = document.querySelector("input[name=copilotName]");
+    let fuelLevel = document.querySelector("input[name=fuelLevel]");
+    let cargoMass = document.querySelector("input[name=cargoMass]");
+ 
+    let pilotStatus = document.getElementById("pilotStatus");
+    let copilotStatus = document.getElementById("copilotStatus");
+    let fuelStatus = document.getElementById("fuelStatus");
+    let cargoStatus = document.getElementById("cargoStatus");
 
-   let pilotName = document.querySelector("input[name=pilotName]");
-   let copilotName = document.querySelector("input[name=copilotName]");
-   let fuel = document.querySelector("input[name=fuelLevel]");
-   let cargoMass = document.querySelector("input[name=cargoMass]");
-
-//    testForm.addEventListener("submit", function(event) {
-
-   if (validateInput(pilot) === "" || validateInput(copilot) === "" || 
-   validateInput(fuel) === "" || validateInput(cargoLevel) === "") {
-    alert("All fields are required");
-    event.preventDefault();
-    
-   } if (validateInput(pilot) === "Is a Number" || validateInput(copilot) === "Is a Number" ||
-    validateInput(fuel) === "Not a Number" || validateInput(cargoLevel) === "Not a Number") {
-        alert("You entered invalid information");
+    let launchStatus = document.getElementById("input[name=launchStatus]");
+ 
+    if (validateInput(pilotName.value) === "" || validateInput(copilotName.value) === "" || 
+    validateInput(fuelLevel.value) === "" || validateInput(cargoMass.value) === "") {
+     alert("All fields are required");
+     event.preventDefault();
     } else {pilotStatus.innerHTML = `Pilot ${pilotName} is ready for launch.`
     copilotStatus.innerHTML = `Co-pilot ${copilotName} is ready for launch.`
 
-    let launchStatus = document.getElementById("input[name=launchStatus]");
-
-   }  if (Number(fuel) < 10000) { 
+    }  if (fuelLevel < 10000) { 
         fuelStatus.innerHTML = "Not enough fuel for the journey";
         faultyItems.style.visibility = 'visible';
         launchStatus.innerHTML = "Shuttle not ready for launch";
         launchStatus.style.color = "red";
-
-   } if (Number(cargoMass) > 10000) {
+   } 
+   
+   else { 
+    fuelStatus.innerHTML = "Fuel level is high enough for Launch."
+   }
+   
+   if (cargoLevel > 10000) {
         faultyItems.style.visibility = "visible";
         cargoStatus.innerHTML = "There is too much mass for the shuttle to take off";
         launchStatus.innerHTML = "Shuttle not ready for launch";
         launchStatus.style.color = "red";
 
    } else {
+    cargoStatus.innerHTML = "Cargo Mass low enough for launch";
+
+   } if (fuelLevel >= 10000 && cargoLevel <= 10000) {
+        launchStatus.style.color = "green";
+        launchStatus.innerHTML = "Shuttle ready for launch";   
+        faultyitems.style.visibility
+    } else {
         launchStatus.style.color = "green";
         launchStatus.innerHTML = "Shuttle ready for launch";    
-    };
-};
+    }
+})
+}
 
 async function myFetch() {
     let planetsReturned = await fetch("https://handlers.education.launchcode.org/static/planets.json")
@@ -85,8 +89,7 @@ async function myFetch() {
 
 function pickPlanet(planets) { 
     let planetIndex = Math.round(Math.random() * planets.length);
-    return planetIndex;
-    // return one planet from the list with a randomly-selected index.
+    return planets[planetIndex];
 }
 
 
